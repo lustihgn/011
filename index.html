@@ -1,31 +1,76 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Year 2026</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<title>Retro Tunnel</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        overflow: hidden;
+    }
+    canvas {
+        display: block;
+    }
+</style>
 </head>
-
 <body>
+<canvas id="canvas"></canvas>
 
-<canvas id="fireworks"></canvas>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-<div class="year">2026</div>
-<h1 class="title">✨ New Year 2026 ✨</h1>
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <img id="popup-img" src="">
-    <p id="popup-text"></p>
-    <div class="close">(Chạm ra ngoài để đóng)</div>
-  </div>
-</div>
+const centerX = () => canvas.width / 2;
+const centerY = () => canvas.height / 2;
 
-<audio id="bgm" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+let speed = 8;
+let depth = 200;
+let lines = [];
 
-<script src="script.js"></script>
+for (let i = 0; i < depth; i++) {
+    lines.push(i * 20);
+}
+
+function drawTunnel() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < lines.length; i++) {
+        let z = lines[i];
+        let scale = 600 / z;
+
+        let w = canvas.width * scale;
+        let h = canvas.height * scale;
+
+        ctx.strokeStyle = `rgba(255,0,150,${1 - z / 4000})`;
+        ctx.lineWidth = 2;
+
+        ctx.strokeRect(
+            centerX() - w / 2,
+            centerY() - h / 2,
+            w,
+            h
+        );
+
+        lines[i] -= speed;
+        if (lines[i] < 20) {
+            lines[i] = depth * 20;
+        }
+    }
+
+    requestAnimationFrame(drawTunnel);
+}
+
+drawTunnel();
+</script>
 </body>
 </html>
